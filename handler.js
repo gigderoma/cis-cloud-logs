@@ -153,7 +153,7 @@ async function downloadAndSend(params) {
       });
       if ((i > 0 && i % (LOGS - 1) === 0) || i === sa.length - 1) {
         console.log(`DEBUG: Sending package = ${i / LOGS + 1}`);
-        const response = await sendLogDNA(fj);
+        const response = await sendCloudLog(fj);
         console.log(`DEBUG: sendCloudLog response = ${JSON.stringify(response)}`);
         // Example response body = {"status":"ok","batchID":""}
         if (response && response.status === "ok") {
@@ -171,13 +171,13 @@ async function downloadAndSend(params) {
 }
 
 async function main(params) {
-  console.time("COS-CLOUD_LOGS");
+  console.time("CIS-CLOUD_LOGS");
   if (!cos) {
     cos = new S3({
-      endpoint: params.endpoint,
-      apiKeyId: params.apiKeyId,
+      endpoint: process.env.ENDPOINT,
+      apiKeyId: process.env.APIKEYID,
       ibmAuthEndpoint: "https://iam.cloud.ibm.com/identity/token",
-      serviceInstanceId: params.serviceInstanceId,
+      serviceInstanceId: process.env.SRVINSTID,
     });
   }
   if (!INGESTION_KEY || !HOSTNAME) {
