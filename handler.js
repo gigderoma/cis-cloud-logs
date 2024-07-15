@@ -81,7 +81,7 @@ async function uploadAndDeleteBucket(bucketReceiver, fileName) {
   }
 }
 
-function sendLogDNA(json) {
+function sendCloudLog(json) {
   return request({
     method: "POST",
     url: `https://logs.us-south.logging.cloud.ibm.com/logs/ingest?hostname=${HOSTNAME}`,
@@ -145,7 +145,7 @@ async function downloadAndSend(params) {
       fj.lines.push({
         timestamp: new Date(dateTime).getTime(),
         line: "[AUTOMATIC] LOG FROM IBM CLOUD INTERNET SERVICE",
-        app: "logdna-cos",
+        app: "cis-cloud_logs",
         level: "INFO",
         meta: {
           customfield: json,
@@ -154,7 +154,7 @@ async function downloadAndSend(params) {
       if ((i > 0 && i % (LOGS - 1) === 0) || i === sa.length - 1) {
         console.log(`DEBUG: Sending package = ${i / LOGS + 1}`);
         const response = await sendLogDNA(fj);
-        console.log(`DEBUG: sendLogDNA response = ${JSON.stringify(response)}`);
+        console.log(`DEBUG: sendCloudLog response = ${JSON.stringify(response)}`);
         // Example response body = {"status":"ok","batchID":""}
         if (response && response.status === "ok") {
           fj.lines = [];
@@ -171,7 +171,7 @@ async function downloadAndSend(params) {
 }
 
 async function main(params) {
-  console.time("LogDNA-COS");
+  console.time("COS-CLOUD_LOGS");
   if (!cos) {
     cos = new S3({
       endpoint: params.endpoint,
@@ -185,11 +185,11 @@ async function main(params) {
     HOSTNAME = params.hostname;
   }
   if (!BUCKET_ARCHIVE) {
-    BUCKET_ARCHIVE = params.bucketArchive;
+    BUCKET_ARCHIVE =  process.env.BCKTARCHIVE;
   }
   const response = await downloadAndSend(params);
   console.log(`DEBUG: downloadAndSend = ${JSON.stringify(response.message)}`);
-  console.timeEnd("LogDNA-COS");
+  console.timeEnd("COS-CLOUD_LOGS");
 }
 
 exports.main = main;
