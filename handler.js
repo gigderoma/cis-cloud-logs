@@ -171,6 +171,7 @@ async function downloadAndSend(params) {
 
 async function main(params) {
   console.time("CIS-CLOUD_LOGS");
+  console.log(" ---- START ----");
   if (!cos) {
     cos = new S3({
       endpoint: process.env.ENDPOINT,
