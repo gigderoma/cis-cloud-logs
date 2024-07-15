@@ -15,8 +15,7 @@
  * limitations under the License.
  *
  */
-// https://www.npmjs.com/package/dotenv
-require("dotenv").config();
+
 // https://www.npmjs.com/package/ibm-cos-sdk
 const { S3 } = require("ibm-cos-sdk");
 // https://www.npmjs.com/package/request
